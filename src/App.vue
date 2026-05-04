@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-const phrase = "Respirar también es avanzar"
+const phrase = "Vilmita yo la quiero mucho"
 const words = phrase.split(' ')
 
 const tiles = ref([])
@@ -20,7 +20,7 @@ const isSolved = computed(() =>
 )
 
 const wordsToReveal = computed(() =>
-  Math.floor(correctCount.value * words.length / 9)
+  Math.min(1 + Math.floor(correctCount.value * (words.length - 1) / 9), words.length)
 )
 
 function countInversions(arr) {
@@ -33,15 +33,17 @@ function countInversions(arr) {
 }
 
 function shuffleTiles() {
-  const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  if (countInversions(arr) % 2 !== 0) {
-    const i1 = arr.indexOf(1)
-    const i2 = arr.indexOf(2)
-    ;[arr[i1], arr[i2]] = [arr[i2], arr[i1]]
+  let arr = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+  for (let move = 0; move < 15; move++) {
+    const emptyIdx = arr.indexOf(0)
+    const neighbors = []
+    const r = Math.floor(emptyIdx / 3), c = emptyIdx % 3
+    if (r > 0) neighbors.push(emptyIdx - 3)
+    if (r < 2) neighbors.push(emptyIdx + 3)
+    if (c > 0) neighbors.push(emptyIdx - 1)
+    if (c < 2) neighbors.push(emptyIdx + 1)
+    const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)]
+    ;[arr[randomNeighbor], arr[emptyIdx]] = [arr[emptyIdx], arr[randomNeighbor]]
   }
   tiles.value = arr
 }
@@ -124,14 +126,20 @@ shuffleTiles()
         @drop="tile === 0 ? onDrop($event) : null"
         @touchstart="onTouchStart($event, idx)"
         @touchend="onTouchEnd($event)"
-        class="rounded-lg transition-all duration-500 active:scale-95 shadow-md"
-        :class="tile === 0 && !isSolved ? 'bg-white cursor-default' : 'bg-cover cursor-grab'"
+        class="rounded-lg transition-all duration-500 active:scale-95 shadow-md relative"
+        :class="tile === 0 && !isSolved ? 'bg-white cursor-default' : 'bg-cover cursor-grab',
+                tile !== 0 && tile === idx ? 'ring-2 ring-green-400 ring-opacity-60 brightness-105' : ''"
         :style="tile === 0 && !isSolved ? {} : {
           backgroundImage: 'url(/assets/img/paisaje1.jpg)',
           backgroundSize: '300% 300%',
           backgroundPosition: bgPos(tile)
         }"
-      />
+      >
+        <span
+          v-if="tile !== 0"
+          class="absolute top-1 left-1.5 w-5 h-5 rounded-full bg-white text-black text-xs font-medium flex items-center justify-center shadow-sm pointer-events-none"
+        >{{ tile + 1 }}</span>
+      </div>
     </div>
 
     <div class="mt-8 text-center">
