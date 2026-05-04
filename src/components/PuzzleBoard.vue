@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   image: { type: String, required: true },
@@ -23,6 +23,14 @@ const correctCount = computed(() =>
 const isSolved = computed(() =>
   tiles.value.every((val, idx) => val === idx)
 )
+
+watch(isSolved, (newVal) => {
+  if (newVal) {
+    emit('solved')
+  }
+})
+
+const emit = defineEmits(['solved'])
 
 const wordsToReveal = computed(() => {
   if (words.value.length === 0) return 0
