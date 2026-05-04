@@ -5,6 +5,9 @@ const phrase = "Respirar también es avanzar"
 const words = phrase.split(' ')
 
 const tiles = ref([])
+const draggedIndex = ref(null)
+const touchDragIndex = ref(null)
+const tileRefs = ref([])
 
 const emptyIndex = computed(() => tiles.value.indexOf(0))
 
@@ -50,13 +53,51 @@ function isAdjacent(i1, i2) {
          (c1 === c2 && Math.abs(r1 - r2) === 1)
 }
 
-function moveTile(index) {
-  if (tiles.value[index] === 0) return
-  if (!isAdjacent(index, emptyIndex.value)) return
+function moveTile(fromIndex) {
+  if (!isAdjacent(fromIndex, emptyIndex.value)) return
   const newTiles = [...tiles.value]
   const ei = emptyIndex.value
-  ;[newTiles[index], newTiles[ei]] = [newTiles[ei], newTiles[index]]
+  ;[newTiles[fromIndex], newTiles[ei]] = [newTiles[ei], newTiles[fromIndex]]
   tiles.value = newTiles
+}
+
+function onDragStart(e, index) {
+  if (tiles.value[index] === 0) return
+  draggedIndex.value = index
+  e.dataTransfer.effectAllowed = 'move'
+}
+
+function onDragOver(e) {
+  e.preventDefault()
+}
+
+function onDrop(e) {
+  e.preventDefault()
+  if (draggedIndex.value !== null) {
+    moveTile(draggedIndex.value)
+    draggedIndex.value = null
+  }
+}
+
+function onTouchStart(e, index) {
+  if (tiles.value[index] === 0) return
+  touchDragIndex.value = index
+}
+
+function onTouchEnd(e) {
+  if (touchDragIndex.value === null) return
+  const touch = e.changedTouches[0]
+  const { clientX, clientY } = touch
+  const targetIdx = tileRefs.value.findIndex((el, idx) => {
+    if (!el || tiles.value[idx] !== 0) return false
+    const rect = el.getBoundingClientRect()
+    return clientX >= rect.left && clientX <= rect.right &&
+           clientY >= rect.top && clientY <= rect.bottom
+  })
+  if (targetIdx !== -1) {
+    moveTile(touchDragIndex.value)
+  }
+  touchDragIndex.value = null
 }
 
 function bgPos(val) {
@@ -76,11 +117,17 @@ shuffleTiles()
       <div
         v-for="(tile, idx) in tiles"
         :key="idx"
-        @click="moveTile(idx)"
-        class="rounded-lg cursor-pointer transition-all duration-500 active:scale-95 shadow-md"
-        :class="tile === 0 && !isSolved ? 'bg-gray-300' : 'bg-cover'"
+        :ref="(el) => tileRefs[idx] = el"
+        :draggable="tile !== 0"
+        @dragstart="onDragStart($event, idx)"
+        @dragover="tile === 0 ? onDragOver($event) : null"
+        @drop="tile === 0 ? onDrop($event) : null"
+        @touchstart="onTouchStart($event, idx)"
+        @touchend="onTouchEnd($event)"
+        class="rounded-lg transition-all duration-500 active:scale-95 shadow-md"
+        :class="tile === 0 && !isSolved ? 'bg-white cursor-default' : 'bg-cover cursor-grab'"
         :style="tile === 0 && !isSolved ? {} : {
-          backgroundImage: 'url(https://picsum.photos/seed/puzzle/600/600)',
+          backgroundImage: 'url(/assets/img/paisaje1.jpg)',
           backgroundSize: '300% 300%',
           backgroundPosition: bgPos(tile)
         }"
