@@ -6,6 +6,7 @@ import VictoryScreen from '../components/VictoryScreen.vue'
 
 const boardRef = ref(null)
 const showVictory = ref(false)
+const currentImage = ref('/assets/img/couple.jpg')
 
 function handleShuffle() {
   boardRef.value?.shuffleTiles()
@@ -29,7 +30,7 @@ function handlePlayAgain() {
   <div class="h-full flex flex-col items-center justify-center gap-2 py-2">
     <PuzzleBoard
       ref="boardRef"
-      image="/assets/img/paisaje1.jpg"
+      :image="currentImage"
       phrase="Vilmita yo la quiero mucho"
       difficulty="facil"
       @solved="handleSolved"
@@ -38,7 +39,7 @@ function handlePlayAgain() {
   </div>
   <VictoryScreen
     v-if="showVictory"
-    image="/assets/img/paisaje1.jpg"
+    :image="currentImage"
     phrase="Vilmita yo la quiero mucho"
     :onPlayAgain="handlePlayAgain"
   />

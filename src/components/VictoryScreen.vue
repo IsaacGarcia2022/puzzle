@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, watch } from 'vue'
 import { Download, RotateCcw } from 'lucide-vue-next'
 import html2canvas from 'html2canvas'
 
@@ -12,16 +12,30 @@ const props = defineProps({
 const captureRef = ref(null)
 const capturedImage = ref(null)
 
-onMounted(async () => {
+async function captureImage() {
   await nextTick()
-  if (captureRef.value) {
-    const canvas = await html2canvas(captureRef.value, {
-      backgroundColor: '#ffffff',
-      scale: 2
-    })
-    capturedImage.value = canvas.toDataURL('image/png')
-  }
-})
+  if (!captureRef.value) return
+
+  await new Promise((resolve) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = resolve
+    img.onerror = resolve
+    img.src = props.image
+  })
+
+  await nextTick()
+
+  const canvas = await html2canvas(captureRef.value, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    useCORS: true
+  })
+  capturedImage.value = canvas.toDataURL('image/png')
+}
+
+onMounted(captureImage)
+watch(() => props.image, captureImage)
 
 function downloadImage() {
   if (!capturedImage.value) return
@@ -41,9 +55,13 @@ function downloadImage() {
       <div ref="captureRef" class="bg-white p-4 rounded-lg">
         <div class="relative w-full aspect-square rounded-lg overflow-hidden">
           <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
-          <p v-if="phrase" class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center py-3 px-2 text-lg font-medium backdrop-blur-sm">
-            {{ phrase }}
-          </p>
+          <p v-if="phrase"
+   class="absolute bottom-0 left-0 right-0 bg-black/70 text-center py-2 px-2 text-2xl backdrop-blur-sm"
+   style="font-family: 'BJCree', serif;">
+  <span class="bg-gradient-to-b from-[#BF953F] via-[#FCF6BA] to-[#AA771C] bg-clip-text text-transparent">
+    {{ phrase }}
+  </span>
+</p> 
         </div>
       </div>
 
