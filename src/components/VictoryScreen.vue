@@ -35,7 +35,7 @@ async function captureImage() {
 }
 
 onMounted(captureImage)
-watch(() => props.image, captureImage)
+watch(() => [props.image, props.phrase], captureImage)
 
 function downloadImage() {
   if (!capturedImage.value) return

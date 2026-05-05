@@ -147,7 +147,7 @@ defineExpose({ shuffleTiles })
       </p>
     </div>
     <p class="text-xs sm:text-sm text-gray-400 text-center shrink-0">Desliza para completar la frase</p>
-    <div class="grid grid-cols-3 gap-1.5 w-full flex-1 max-h-[60vh]">
+    <div class="grid grid-cols-3 gap-1.5 mx-auto" style="width: min(100%, 60vh); aspect-ratio: 1;">
       <div
         v-for="(tile, idx) in tiles"
         :key="idx"
