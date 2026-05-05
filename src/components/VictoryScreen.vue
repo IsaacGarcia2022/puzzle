@@ -39,8 +39,12 @@ function downloadImage() {
       <p class="text-center text-gray-600">Has completado el puzzle</p>
 
       <div ref="captureRef" class="bg-white p-4 rounded-lg">
-        <div class="w-full aspect-square rounded-lg bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
-        <p v-if="phrase" class="mt-3 text-center text-gray-800 font-medium">{{ phrase }}</p>
+        <div class="relative w-full aspect-square rounded-lg overflow-hidden">
+          <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
+          <p v-if="phrase" class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center py-3 px-2 text-lg font-medium backdrop-blur-sm">
+            {{ phrase }}
+          </p>
+        </div>
       </div>
 
       <div class="flex gap-3">
