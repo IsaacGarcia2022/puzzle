@@ -25,12 +25,14 @@ async function captureImage() {
     img.src = props.image
   })
 
-  await nextTick()
+  await new Promise((resolve) => setTimeout(resolve, 300))
 
   const canvas = await html2canvas(captureRef.value, {
     backgroundColor: '#FAF3E8',
     scale: 2,
-    useCORS: true
+    useCORS: true,
+    logging: false,
+    allowTaint: true
   })
   capturedImage.value = canvas.toDataURL('image/png')
 }
@@ -65,11 +67,9 @@ function downloadImage() {
         <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg">
           <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
           <p v-if="phrase"
-   class="absolute bottom-0 left-0 right-0 bg-black/70 text-center py-4 px-4 text-xl backdrop-blur-[2px]"
-   style="font-family: 'BJCree', serif;">
-  <span class="bg-gradient-to-b from-[#BF953F] via-[#FCF6BA] to-[#AA771C] bg-clip-text text-transparent font-medium">
-    {{ phrase }}
-  </span>
+   class="absolute bottom-0 left-0 right-0 bg-black/70 text-center py-4 px-4 text-xl"
+   style="font-family: 'BJCree', serif; color: #FBBF24; font-weight: 500;">
+  {{ phrase }}
 </p>
         </div>
       </div>
