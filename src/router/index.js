@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '../components/AppLayout.vue'
 import JugarView from '../views/JugarView.vue'
 import RachaView from '../views/RachaView.vue'

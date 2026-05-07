@@ -6,7 +6,7 @@ import VictoryScreen from '../components/VictoryScreen.vue'
 
 const boardRef = ref(null)
 const showVictory = ref(false)
-const currentImage = ref(`${import.meta.env.BASE_URL}assets/img/couple.webp`)
+const currentImage = ref('/assets/img/couple.jpg')
 const currentPhrase = 'Vilmita, mi amor yo la quiero mucho'
 
 function handleShuffle() {
