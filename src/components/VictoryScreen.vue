@@ -51,13 +51,13 @@ function downloadImage() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+  <div class="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-50">
     <div class="bg-cream rounded-3xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-sand/80 animate-bounce-in" :class="{ 'opacity-100': showContent, 'opacity-0': !showContent }" style="transition: opacity 0.5s ease-out;">
       <div class="text-center space-y-2">
         <div class="flex justify-center mb-3">
           <Heart class="w-12 h-12 text-terracotta fill-terracotta animate-bounce-in" />
         </div>
-        <h2 class="text-3xl font-display text-charcoal">¡Felicidades!</h2>
+        <h2 class="text-3xl font-display text-charcoal">¡Felicidades mi amor!</h2>
         <p class="text-charcoal/60 font-body">Completó el puzzle como toda una crack!</p>
       </div>
 
