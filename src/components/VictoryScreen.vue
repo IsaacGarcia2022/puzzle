@@ -58,14 +58,14 @@ function downloadImage() {
           <Heart class="w-12 h-12 text-terracotta fill-terracotta animate-bounce-in" />
         </div>
         <h2 class="text-3xl font-display text-charcoal">¡Felicidades!</h2>
-        <p class="text-charcoal/60 font-body">Has completado el puzzle</p>
+        <p class="text-charcoal/60 font-body">Completó el puzzle como toda una crack!</p>
       </div>
 
       <div ref="captureRef" class="bg-cream p-4 rounded-2xl border border-sand/60">
         <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg">
           <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
           <p v-if="phrase"
-   class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/80 to-transparent text-center py-4 px-4 text-xl backdrop-blur-[2px]"
+   class="absolute bottom-0 left-0 right-0 bg-black/70 text-center py-4 px-4 text-xl backdrop-blur-[2px]"
    style="font-family: 'BJCree', serif;">
   <span class="bg-gradient-to-b from-[#BF953F] via-[#FCF6BA] to-[#AA771C] bg-clip-text text-transparent font-medium">
     {{ phrase }}
