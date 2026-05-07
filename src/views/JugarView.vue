@@ -28,7 +28,7 @@ function handlePlayAgain() {
 </script>
 
 <template>
-  <div class="h-full flex flex-col items-center justify-center gap-2 py-2">
+  <div class="h-full flex flex-col items-center justify-center py-4 animate-fade-in">
     <PuzzleBoard
       ref="boardRef"
       :image="currentImage"
@@ -36,7 +36,9 @@ function handlePlayAgain() {
       difficulty="facil"
       @solved="handleSolved"
     />
-    <PuzzleButtons :onShuffle="handleShuffle" :onBack="handleBack" />
+    <div class="mt-6 w-full px-4">
+      <PuzzleButtons :onShuffle="handleShuffle" :onBack="handleBack" />
+    </div>
   </div>
   <VictoryScreen
     v-if="showVictory"

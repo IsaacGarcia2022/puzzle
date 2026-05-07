@@ -8,18 +8,20 @@ defineProps({
 </script>
 
 <template>
-  <div class="mt-6 sm:mt-8 flex flex-col gap-3 sm:gap-4 justify-center w-full max-w-lg mx-auto">
+  <div class="flex gap-3 w-full max-w-lg mx-auto px-2">
     <button
       @click="onShuffle"
-      class="w-full px-5 sm:px-6 py-3 sm:py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors text-md font-medium tracking-wide"
+      class="flex-1 px-6 py-3 bg-terracotta text-cream rounded-xl hover:bg-terracotta/90 transition-all duration-300 text-sm font-medium tracking-wide shadow-md hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 group"
       >
-       <Shuffle class="w-4 h-4 mr-2 inline" />Mezclar
+       <Shuffle class="w-4 h-4 inline transition-transform group-hover:rotate-180 duration-500" />
+       Mezclar
      </button>
     <button
       @click="onBack"
-      class="w-full px-5 sm:px-6 py-3 sm:py-2.5 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-md font-medium tracking-wide"
+      class="flex-1 px-6 py-3 bg-white/80 backdrop-blur-sm text-charcoal/70 border border-sand rounded-xl hover:bg-sand/50 hover:text-charcoal transition-all duration-300 text-sm font-medium tracking-wide shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-2"
     >
-       <ArrowLeft class="w-4 h-4 mr-2 inline" />Regresar
+       <ArrowLeft class="w-4 h-4 inline transition-transform group-hover:-translate-x-1 duration-300" />
+       Regresar
      </button>
   </div>
 </template>

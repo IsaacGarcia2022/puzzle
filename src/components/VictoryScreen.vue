@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, nextTick, watch } from 'vue'
-import { Download, RotateCcw } from 'lucide-vue-next'
+import { Download, RotateCcw, Heart } from 'lucide-vue-next'
 import html2canvas from 'html2canvas'
 
 const props = defineProps({
@@ -11,6 +11,7 @@ const props = defineProps({
 
 const captureRef = ref(null)
 const capturedImage = ref(null)
+const showContent = ref(false)
 
 async function captureImage() {
   await nextTick()
@@ -27,14 +28,17 @@ async function captureImage() {
   await nextTick()
 
   const canvas = await html2canvas(captureRef.value, {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FAF3E8',
     scale: 2,
     useCORS: true
   })
   capturedImage.value = canvas.toDataURL('image/png')
 }
 
-onMounted(captureImage)
+onMounted(() => {
+  captureImage()
+  setTimeout(() => { showContent.value = true }, 100)
+})
 watch(() => [props.image, props.phrase], captureImage)
 
 function downloadImage() {
@@ -47,35 +51,40 @@ function downloadImage() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-      <h2 class="text-2xl font-bold text-center text-gray-800">¡Felicidades! 🎉</h2>
-      <p class="text-center text-gray-600">Has completado el puzzle</p>
+  <div class="fixed inset-0 bg-charcoal/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-cream rounded-3xl max-w-lg w-full p-8 space-y-6 shadow-2xl border border-sand/80 animate-bounce-in" :class="{ 'opacity-100': showContent, 'opacity-0': !showContent }" style="transition: opacity 0.5s ease-out;">
+      <div class="text-center space-y-2">
+        <div class="flex justify-center mb-3">
+          <Heart class="w-12 h-12 text-terracotta fill-terracotta animate-bounce-in" />
+        </div>
+        <h2 class="text-3xl font-display text-charcoal">¡Felicidades!</h2>
+        <p class="text-charcoal/60 font-body">Has completado el puzzle</p>
+      </div>
 
-      <div ref="captureRef" class="bg-white p-4 rounded-lg">
-        <div class="relative w-full aspect-square rounded-lg overflow-hidden">
+      <div ref="captureRef" class="bg-cream p-4 rounded-2xl border border-sand/60">
+        <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg">
           <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: `url(${image})` }"></div>
           <p v-if="phrase"
-   class="absolute bottom-0 left-0 right-0 bg-black/70 text-center py-2 px-2 text-2xl backdrop-blur-sm"
+   class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-charcoal/80 to-transparent text-center py-4 px-4 text-xl backdrop-blur-[2px]"
    style="font-family: 'BJCree', serif;">
-  <span class="bg-gradient-to-b from-[#BF953F] via-[#FCF6BA] to-[#AA771C] bg-clip-text text-transparent">
+  <span class="bg-gradient-to-b from-[#BF953F] via-[#FCF6BA] to-[#AA771C] bg-clip-text text-transparent font-medium">
     {{ phrase }}
   </span>
-</p> 
+</p>
         </div>
       </div>
 
       <div class="flex gap-3">
         <button
           @click="downloadImage"
-          class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center gap-2"
+          class="flex-1 px-5 py-3.5 bg-sage text-cream rounded-xl hover:bg-sage/90 transition-all duration-300 font-medium flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95"
         >
           <Download class="w-5 h-5" />
           Guardar imagen
         </button>
         <button
           @click="onPlayAgain"
-          class="flex-1 px-4 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium flex items-center justify-center gap-2"
+          class="flex-1 px-5 py-3.5 bg-terracotta text-cream rounded-xl hover:bg-terracotta/90 transition-all duration-300 font-medium flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95"
         >
           <RotateCcw class="w-5 h-5" />
           Jugar de nuevo

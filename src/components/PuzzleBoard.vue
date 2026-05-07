@@ -13,6 +13,7 @@ const tiles = ref([])
 const draggedIndex = ref(null)
 const touchDragIndex = ref(null)
 const tileRefs = ref([])
+const lastMovedIndex = ref(-1)
 
 const emptyIndex = computed(() => tiles.value.indexOf(0))
 
@@ -62,6 +63,7 @@ function shuffleTiles() {
     ;[arr[randomNeighbor], arr[emptyIdx]] = [arr[emptyIdx], arr[randomNeighbor]]
   }
   tiles.value = arr
+  lastMovedIndex.value = -1
 }
 
 function isAdjacent(i1, i2) {
@@ -77,6 +79,7 @@ function moveTile(fromIndex) {
   const ei = emptyIndex.value
   ;[newTiles[fromIndex], newTiles[ei]] = [newTiles[ei], newTiles[fromIndex]]
   tiles.value = newTiles
+  lastMovedIndex.value = fromIndex
 }
 
 function onDragStart(e, index) {
@@ -130,24 +133,26 @@ defineExpose({ shuffleTiles })
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full max-w-lg space-y-2 px-2 h-full">
-    <div class="text-center w-full shrink-0">
-      <p class="text-sm w-full sm:text-base md:text-lg text-black tracking-wide inline-flex gap-2 flex-wrap justify-center bg-rose-100 py-3 sm:py-4 rounded">
+  <div class="flex flex-col items-center w-full max-w-lg space-y-4 px-2 h-full justify-center">
+    <div class="text-center w-full shrink-0 px-2">
+      <p class="font-display text-lg sm:text-xl text-charcoal/80 tracking-wide inline-flex gap-2.5 flex-wrap justify-center bg-sand/60 py-4 px-6 rounded-2xl border border-sand/80">
         <span
           v-for="(word, wIdx) in words"
           :key="wIdx"
+          class="transition-all duration-500"
+          :style="{ animationDelay: `${wIdx * 150}ms` }"
         >
           <template v-if="wIdx < wordsToReveal">
-            <span class="animate-fade-in">{{ word }}</span>
+            <span class="animate-stagger inline-block text-terracotta font-medium">{{ word }}</span>
           </template>
           <template v-else>
-            <span class="text-gray-400 font-light">{{ word.replace(/./g, '_') }}</span>
+            <span class="text-charcoal/30 font-light">{{ word.replace(/./g, '_') }}</span>
           </template>
         </span>
       </p>
     </div>
-    <p class="text-xs sm:text-sm text-gray-400 text-center shrink-0">Desliza para completar la frase</p>
-    <div class="grid grid-cols-3 gap-1.5 mx-auto" style="width: min(100%, 60vh); aspect-ratio: 1;">
+    <p class="text-xs text-charcoal/40 text-center shrink-0 italic">Desliza para completar la frase</p>
+    <div class="grid grid-cols-3 gap-2 mx-auto p-3 bg-cream/50 rounded-2xl border border-sand/60" style="width: min(100%, 55vh); aspect-ratio: 1;">
       <div
         v-for="(tile, idx) in tiles"
         :key="idx"
@@ -158,9 +163,12 @@ defineExpose({ shuffleTiles })
         @drop="tile === 0 ? onDrop($event) : null"
         @touchstart="onTouchStart($event, idx)"
         @touchend="onTouchEnd($event)"
-        class="rounded-lg transition-all duration-500 active:scale-95 shadow-md relative"
-        :class="tile === 0 && !isSolved ? 'bg-white cursor-default' : 'bg-cover cursor-grab',
-                tile !== 0 && tile === idx ? 'ring-2 ring-green-400 ring-opacity-60 brightness-105' : ''"
+        class="rounded-xl transition-all duration-300 active:scale-95 cursor-pointer relative overflow-hidden"
+        :class="[
+          tile === 0 && !isSolved ? 'bg-sand/40 cursor-default border-2 border-dashed border-sand/60' : 'bg-cover shadow-lg hover:shadow-xl',
+          tile !== 0 && tile === idx ? 'ring-2 ring-sage ring-offset-2 scale-[1.02]' : '',
+          lastMovedIndex === idx ? 'animate-bounce-in' : ''
+        ]"
         :style="tile === 0 && !isSolved ? {} : {
           backgroundImage: `url(${image})`,
           backgroundSize: '300% 300%',
@@ -169,8 +177,9 @@ defineExpose({ shuffleTiles })
       >
         <span
           v-if="tile !== 0"
-          class="absolute top-1 left-1.5 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white text-black text-xs sm:text-sm font-medium flex items-center justify-center shadow-sm pointer-events-none"
+          class="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-white/90 text-charcoal text-xs font-semibold flex items-center justify-center shadow-md pointer-events-none backdrop-blur-sm"
         >{{ tile + 1 }}</span>
+        <div v-if="tile !== 0 && tile === idx" class="absolute inset-0 bg-sage/10 rounded-xl"></div>
       </div>
     </div>
   </div>
