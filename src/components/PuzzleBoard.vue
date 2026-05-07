@@ -109,13 +109,19 @@ function onTouchEnd(e) {
   if (touchDragIndex.value === null) return
   const touch = e.changedTouches[0]
   const { clientX, clientY } = touch
-  const targetIdx = tileRefs.value.findIndex((el, idx) => {
-    if (!el || tiles.value[idx] !== 0) return false
-    const rect = el.getBoundingClientRect()
-    return clientX >= rect.left && clientX <= rect.right &&
-           clientY >= rect.top && clientY <= rect.bottom
-  })
-  if (targetIdx !== -1) {
+
+  // Batch DOM reads to avoid layout thrashing
+  const emptyTileRects = tileRefs.value.map((el, idx) => {
+    if (!el || tiles.value[idx] !== 0) return null
+    return { idx, rect: el.getBoundingClientRect() }
+  }).filter(Boolean)
+
+  const target = emptyTileRects.find(({ rect }) =>
+    clientX >= rect.left && clientX <= rect.right &&
+    clientY >= rect.top && clientY <= rect.bottom
+  )
+
+  if (target) {
     moveTile(touchDragIndex.value)
   }
   touchDragIndex.value = null
